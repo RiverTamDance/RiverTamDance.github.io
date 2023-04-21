@@ -2,13 +2,25 @@
 <html>
 <body>
     "I am a chocolate banana"
-
+    <br> <br>
     <label for="name">Name (4 to 8 characters):</label>
 
-    <input type="text" id="name" name="name" required
-    minlength="4" maxlength="8" size="10">
+    <input id="user_input">
+    <button onclick = "myFunction()"> Submit </button>
 
-   <h1>HTML Article on Links </h1>
-   <p><a href="https://rivertamdance.github.io/sudoku">Click this to navigate to the Google home page</a></p>
+    <h1 id="message"> </h1>
+
+    <script>
+        function myFunction() {
+            let monkey_gun = document.querySelector("#user_input");
+            let monkey_message = document.querySelector("#message");
+
+            monkey_message.innerHTML = "Welcome to my webpage " + monkey_gun.value;
+
+        }
+    </script>
+
+   <h1> Sudoku page! </h1>
+   <p><a href="https://rivertamdance.github.io/sudoku">Click this to navigate to the Sudoku page</a></p>
 </body>
 </html>
