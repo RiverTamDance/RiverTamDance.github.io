@@ -1,5 +1,33 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
+<head>
+<style>
+    #chessboard {
+        width: 500px;
+        height: 400px;
+    }
+    .chess-square {
+        top: 20px;
+        float: right;
+        width: 3px;
+        height: 400px;
+        background-color: #000;
+        position: absolute;
+        margin: 20px;
+        z-index: 1;
+    }
+    .sudoku-horizontal {
+        top: 40px;
+        float: none;
+        width: 400px;
+        height: 3px;
+        background-color: #000;
+        margin-bottom: 20px;
+        z-index: 2;
+    }
+</style>
+</head>
+        
 <body>
     "I am a chocolate banana"
     <br> <br>
@@ -20,7 +48,54 @@
         }
     </script>
 
+<div id="chessboard">
+</div>
+<script>
+   var chessboard = document.getElementById('chessboard');
+   for (var i = 0; i < 10; i++) {
+        var chessSquare = document.createElement('div');
+        var sudokuHorizontal = document.createElement('div');
+        chessSquare.className = 'chess-square';
+        chessSquare.
+        sudokuHorizontal.className = 'sudoku-horizontal';
+        chessboard.appendChild(chessSquare);
+        chessboard.appendChild(sudokuHorizontal);
+   }
+</script>
+
    <h1> Sudoku page! </h1>
    <p><a href="https://rivertamdance.github.io/sudoku">Click this to navigate to the Sudoku page</a></p>
+</body>
+</html> -->
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+#chessboard {
+   width: 450px;
+   height: 450px;
+}
+.chess-square {
+   float: left;
+   width: 48px;
+   border: 1px solid black;
+   height: 48px;
+   background-color: #fff;
+}
+</style>
+</head>
+<body>
+<div id="chessboard"></div>
+<script>
+   var chessboard = document.getElementById('chessboard');
+   for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+         var chessSquare = document.createElement('div');
+         chessSquare.className = 'chess-square';
+         chessboard.appendChild(chessSquare);
+      }
+   }
+</script>
 </body>
 </html>
