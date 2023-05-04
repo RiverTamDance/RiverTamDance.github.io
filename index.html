@@ -130,23 +130,28 @@ height: var(--wid);
 
 }
 
-div.topleft {
-
-    border: 1px solid green;
-    margin-left: 200px;
-    width: var(--wid);
-    height: var(--wid);
-
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-
+.number_input {
+    outline: none;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: transparent;
+}
 
 </style>
 </head>
 <body>
     <div class = "sudoku_board">
 
-        <div class = "small_square"></div>
+        <div class = "small_square">
+            <input type="number" id = "1,1" required min=1 max=9 class = "number_input">
+        </div>
         <div class = "small_square"></div>
         <div class = "small_square"></div>
         <div class = "small_square"></div>
