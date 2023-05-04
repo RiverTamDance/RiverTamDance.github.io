@@ -113,7 +113,7 @@
 }
 
 
-.sudoku_board {
+#sudoku_board {
 
     border: 1px solid black;
     width: 450px;
@@ -142,17 +142,35 @@ input::-webkit-inner-spin-button {
     height: 48px;
     border: none;
     background: transparent;
+    font-size: 24pt;
+    margin-left:  12px;
 }
 
 </style>
 </head>
 <body>
-    <div class = "sudoku_board">
 
-        <div class = "small_square">
-            <input type="number" id = "1,1" required min=1 max=9 class = "number_input">
-        </div>
-        <div class = "small_square"></div>
+    <div id="sudoku_board"></div>
+
+    <script>
+        let SudokuBoard = document.querySelector('#sudoku_board') ;
+        for (let i =1; i<=9; i++) {
+            for (let j=1; j<=9; j++){
+                let SmallSquare = document.createElement('div');
+                let InputNum = document.createElement('input');
+                InputNum.id = ""+i+","+j
+                InputNum.className = 'number_input'
+                SmallSquare.className = 'small_square';
+                SmallSquare.appendChild(InputNum)
+                SudokuBoard.appendChild(SmallSquare);
+            }
+        }
+    </script>
+        
+        <!-- <div class = "small_square">
+            <input type="number" id = "1,1" min=1 max=9 class = "number_input">
+        </div> -->
+        <!-- <div class = "small_square"></div>
         <div class = "small_square"></div>
         <div class = "small_square"></div>
         <div class = "small_square"></div>
@@ -239,8 +257,7 @@ input::-webkit-inner-spin-button {
         <div class = "small_square"></div>
         <div class = "small_square"></div>
         <div class = "small_square"></div>
-        <div class = "small_square"></div>
+        <div class = "small_square"></div> -->
 
-    </div>
 </body>
 </html>
