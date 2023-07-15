@@ -22,13 +22,13 @@ function union(setA, setB) {
     return _union;
   }
 
-  function difference(setA, setB) {
-    const _difference = new Set(setA);
-    for (const elem of setB) {
-      _difference.delete(elem);
-    }
-    return _difference;
+function difference(setA, setB) {
+  const _difference = new Set(setA);
+  for (const elem of setB) {
+    _difference.delete(elem);
   }
+  return _difference;
+}
 
 //I need to define square sections
 let map_sudoku_test = new Map()
@@ -111,7 +111,7 @@ function taken_square_values(coords){
   let coords_split = coords.split(",")
   let i_adjusted = Math.floor(coords_split[0]/3)
   let j_adjusted = Math.floor(coords_split[1]/3)
-  let coords_adjusted = "" + i_adjusted + "," + j_adjusted
+  let coords_adjusted = "" + i_adjusted + "," + j_adjusted 
   let square_coords = map_squares.get(coords_adjusted)
 
   let taken_values = new Set()
@@ -205,6 +205,45 @@ function simplify(map_sudoku_test){
             map_sudoku_test.set(coords, [val, new Set()])
             update_sudoku(coords, val)
 
+          } else {
+
+            // row potential set union & difference
+            var row_potential_sets = new Set()
+            for (let c = 0; c<9; c++){
+              if (c != j){
+                let temp_coords = ""+i+","+c
+                row_potential_sets = union(row_potential_sets, map_sudoku_test.get(temp_coords)[1])
+              }
+            }
+
+            // column potential set union & difference
+            var column_potential_sets = new Set()
+            for (let r = 0; r<9; r++){
+              if (r != i){
+                let temp_coords = ""+r+","+j
+                column_potential_sets = union(column_potential_sets, map_sudoku_test.get(temp_coords)[1])
+              }
+            }
+
+            // square potential set union & difference
+
+            let i_adjusted = Math.floor(i/3)
+            let j_adjusted = Math.floor(j/3)
+            let coords_adjusted = "" + i_adjusted + "," + j_adjusted 
+            let square_coords = map_squares.get(coords_adjusted)
+            var square_coords_length = square_coords.length;
+
+            var square_potential_sets = new Set()
+            for (let k = 0; k < square_coords_length; k++){
+              let s = square_coords[k]
+              if (s != coords){
+                square_potential_sets = union(square_potential_sets, map_sudoku_test.get(s)[1])
+              }
+            }
+
+            let row_potential_difference = difference(potential_set, row_potential_sets)
+            let column_potential_difference = difference(potential_set, column_potential_sets)
+            let square_potential_difference = difference(potential_set, square_potential_sets)
           }
         }
       }
@@ -212,7 +251,50 @@ function simplify(map_sudoku_test){
   }
 }
 
-simplify(map_sudoku_test)
+
+function no_zeros(sudoku){
+
+  let no_zeros_bool = true;
+
+  for (let i = 0; i<9; i++){
+    for (let j = 0; j<9; j++){
+
+      let coords = ""+i+","+j;
+
+      if (sudoku.get(coords)[0] == 0){
+        let no_zeros_bool = false;
+      }
+    
+    }
+  }
+  return(no_zeros_bool)
+}
+
+function solve(map_sudoku_test){
+
+  let guess_stack = [];
+  guess_stack.push(map_sudoku_test);
+
+  let solved = false;
+  while (solved == false){
+    var current_guess = guess_stack.pop();
+    simplify(current_guess)
+    solved = no_zeros(current_guess)
+
+    if (solved == false){
+
+      console.log("hello, false it is :)")
+
+    }
+  }
+
+  return(current_guess)
+
+}
+
+map_sudoku_test = solve(map_sudoku_test);
+
+
 
 let str1 = ""
 for ( let i = 0; i<9; i++){
