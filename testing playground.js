@@ -309,3 +309,5 @@ for ( let i = 0; i<9; i++){
 
 
 console.log(str1)
+
+//cheeky change to make sure I got things moving smoothly again.
