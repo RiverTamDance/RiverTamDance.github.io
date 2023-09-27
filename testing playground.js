@@ -2,17 +2,41 @@
 
 //I should use a map instead...
 const sudoku_test = 
-[
-[0,0,3,0,2,0,6,0,0],
-[9,0,0,3,0,5,0,0,1],
-[0,0,1,8,0,6,4,0,0],
-[0,0,8,1,0,2,9,0,0],
-[7,0,0,0,0,0,0,0,8],
-[0,0,6,7,0,8,2,0,0],
-[0,0,2,6,0,9,5,0,0],
-[8,0,0,2,0,3,0,0,9],
-[0,0,5,0,1,0,3,0,0]
-]
+// [
+// [0,0,3,0,2,0,6,0,0],
+// [9,0,0,3,0,5,0,0,1],
+// [0,0,1,8,0,6,4,0,0],
+// [0,0,8,1,0,2,9,0,0],
+// [7,0,0,0,0,0,0,0,8],
+// [0,0,6,7,0,8,2,0,0],
+// [0,0,2,6,0,9,5,0,0],
+// [8,0,0,2,0,3,0,0,9],
+// [0,0,5,0,1,0,3,0,0]
+// ]
+// [
+// [2, 0, 0, 0, 8, 0, 3, 0, 0], 
+// [0, 6, 0, 0, 7, 0, 0, 8, 4], 
+// [0, 3, 0, 5, 0, 0, 2, 0, 9], 
+// [0, 0, 0, 1, 0, 5, 4, 0, 8], 
+// [0, 0, 0, 0, 0, 0, 0, 0, 0], 
+// [4, 0, 2, 7, 0, 6, 0, 0, 0], 
+// [3, 0, 1, 0, 0, 7, 0, 4, 0], 
+// [7, 2, 0, 0, 4, 0, 0, 6, 0], 
+// [0, 0, 4, 0, 1, 0, 0, 0, 3]
+// ]
+//[[0, 0, 0, 0, 0, 0, 9, 0, 7], [0, 0, 0, 4, 2, 0, 1, 8, 0], [0, 0, 0, 7, 0, 5, 0, 2, 6], [1, 0, 0, 9, 0, 4, 0, 0, 0], [0, 5, 0, 0, 0, 0, 0, 4, 0], [0, 0, 0, 5, 0, 7, 0, 0, 9], [9, 2, 0, 1, 0, 8, 0, 0, 0], [0, 3, 4, 0, 5, 9, 0, 0, 0], [5, 0, 7, 0, 0, 0, 0, 0, 0]]
+//[[0, 3, 0, 0, 5, 0, 0, 4, 0], [0, 0, 8, 0, 1, 0, 5, 0, 0], [4, 6, 0, 0, 0, 0, 0, 1, 2], [0, 7, 0, 5, 0, 2, 0, 8, 0], [0, 0, 0, 6, 0, 3, 0, 0, 0], [0, 4, 0, 1, 0, 9, 0, 3, 0], [2, 5, 0, 0, 0, 0, 0, 9, 8], [0, 0, 1, 0, 2, 0, 6, 0, 0], [0, 8, 0, 0, 6, 0, 0, 2, 0]]
+//[[0, 2, 0, 8, 1, 0, 7, 4, 0], [7, 0, 0, 0, 0, 3, 1, 0, 0], [0, 9, 0, 0, 0, 2, 8, 0, 5], [0, 0, 9, 0, 4, 0, 0, 8, 7], [4, 0, 0, 2, 0, 8, 0, 0, 3], [1, 6, 0, 0, 3, 0, 2, 0, 0], [3, 0, 2, 7, 0, 0, 0, 6, 0], [0, 0, 5, 6, 0, 0, 0, 0, 8], [0, 7, 6, 0, 5, 1, 0, 9, 0]]
+[[1, 0, 0, 9, 2, 0, 0, 0, 0], 
+[5, 2, 4, 0, 1, 0, 0, 0, 0], 
+[0, 0, 0, 0, 0, 0, 0, 7, 0], 
+[0, 5, 0, 0, 0, 8, 1, 0, 2], 
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[4, 0, 2, 7, 0, 0, 0, 9, 0], 
+[0, 6, 0, 0, 0, 0, 0, 0, 0], 
+[0, 0, 0, 0, 3, 0, 9, 4, 5], 
+[0, 0, 0, 0, 7, 1, 0, 0, 6]]
+
 
 function union(setA, setB) {
     const _union = new Set(setA);
@@ -52,13 +76,13 @@ const one_to_nine = new Set([1,2,3,4,5,6,7,8,9])
 // console.log(sudoku_test[1][0])
 // console.log(map_sudoku_test.get("1,0"))
 
-function taken_row_values(i){
+function taken_row_values(i, sudoku){
 
     //we move along the columns for a given row
   let taken_values = new Set()
   for (j = 0; j<9; j++){
     let coords = "" + i + "," + j
-    const val = map_sudoku_test.get(coords)[0]
+    const val = sudoku.get(coords)[0]
     if (val != 0) {
       taken_values.add(val)
     }
@@ -68,12 +92,12 @@ function taken_row_values(i){
 
 }
 
-function taken_col_values(j){
+function taken_col_values(j, sudoku){
 
   let taken_values = new Set()
   for (i= 0; i<9; i++){
     let coords = "" + i + "," + j
-    const val = map_sudoku_test.get(coords)[0]
+    const val = sudoku.get(coords)[0]
     if (val != 0) {
       taken_values.add(val)
     }
@@ -106,7 +130,7 @@ for (let i = 0; i < 9; i++){
   }
 }
 
-function taken_square_values(coords){
+function taken_square_values(coords, sudoku){
 
   let coords_split = coords.split(",")
   let i_adjusted = Math.floor(coords_split[0]/3)
@@ -117,7 +141,7 @@ function taken_square_values(coords){
   let taken_values = new Set()
   for (let a = 0; a < square_coords.length; a++){
     
-    const val = map_sudoku_test.get(square_coords[a])[0]
+    const val = sudoku.get(square_coords[a])[0]
     if (val != 0) {
       taken_values.add(val)
     }
@@ -136,9 +160,9 @@ for (let i = 0; i <9; i++){
         
         if (actual_val == 0){
           // a potential set is informed by what...
-            let row_set = taken_row_values(i)
-            let col_set = taken_col_values(j)
-            let square_set = taken_square_values(coords)
+            let row_set = taken_row_values(i, map_sudoku_test)
+            let col_set = taken_col_values(j, map_sudoku_test)
+            let square_set = taken_square_values(coords, map_sudoku_test)
 
             // console.log(coords)
             // console.log(row_potential_set)
@@ -157,7 +181,7 @@ for (let i = 0; i <9; i++){
     }
 }
 
-function update_sudoku(coords, val){
+function update_sudoku(coords, val, sudoku){
 
   coords_split = coords.split(",")
   row_coord = coords_split[0]
@@ -172,38 +196,39 @@ function update_sudoku(coords, val){
 
   for (let i = 0; i <9; i++){
       let col_change = ""+i+","+col_coord
-      map_sudoku_test.get(col_change)[1].delete(val)
+      sudoku.get(col_change)[1].delete(val)
 
       let row_change = ""+row_coord+","+i 
-      map_sudoku_test.get(row_change)[1].delete(val)
+      sudoku.get(row_change)[1].delete(val)
 
-      map_sudoku_test.get(square_coords[i])[1].delete(val)
+      sudoku.get(square_coords[i])[1].delete(val)
 
-  }  
+  }
 
 }
 
 
-function simplify(map_sudoku_test){
+function simplify(sudoku){
   let change = true
   while (change == true){
     change = false
-    for (let i = 0; i<9; i++){
+    for (let i=0; i<9; i++){
       for (let j=0; j<9; j++){
         
         let coords = ""+i+","+j
-        // console.log(coords)
-        // console.log(map_sudoku_test.get(coords))
-        
-        if (map_sudoku_test.get(coords)[0] == 0){
+        if (coords == "0,0"){
+          console.log("here!")
+        }
 
-          let potential_set = map_sudoku_test.get(coords)[1]
+        if (sudoku.get(coords)[0] == 0){
+
+          let potential_set = sudoku.get(coords)[1]
 
           if (potential_set.size == 1){
             change = true
             const val = potential_set.values().next().value
-            map_sudoku_test.set(coords, [val, new Set()])
-            update_sudoku(coords, val)
+            sudoku.set(coords, [val, new Set()])
+            update_sudoku(coords, val, sudoku)
 
           } else {
 
@@ -212,7 +237,7 @@ function simplify(map_sudoku_test){
             for (let c = 0; c<9; c++){
               if (c != j){
                 let temp_coords = ""+i+","+c
-                row_potential_sets = union(row_potential_sets, map_sudoku_test.get(temp_coords)[1])
+                row_potential_sets = union(row_potential_sets, sudoku.get(temp_coords)[1])
               }
             }
 
@@ -221,7 +246,7 @@ function simplify(map_sudoku_test){
             for (let r = 0; r<9; r++){
               if (r != i){
                 let temp_coords = ""+r+","+j
-                column_potential_sets = union(column_potential_sets, map_sudoku_test.get(temp_coords)[1])
+                column_potential_sets = union(column_potential_sets, sudoku.get(temp_coords)[1])
               }
             }
 
@@ -234,16 +259,35 @@ function simplify(map_sudoku_test){
             var square_coords_length = square_coords.length;
 
             var square_potential_sets = new Set()
+        
             for (let k = 0; k < square_coords_length; k++){
               let s = square_coords[k]
               if (s != coords){
-                square_potential_sets = union(square_potential_sets, map_sudoku_test.get(s)[1])
+                square_potential_sets = union(square_potential_sets, sudoku.get(s)[1])
               }
             }
-
+            //20230924
+            //Right now I need to get the potential set logic set-up
             let row_potential_difference = difference(potential_set, row_potential_sets)
             let column_potential_difference = difference(potential_set, column_potential_sets)
             let square_potential_difference = difference(potential_set, square_potential_sets)
+            
+            if (row_potential_difference.size == 1){
+              change = true;
+              const val = row_potential_difference.values().next().value;
+              sudoku.set(coords, [val, new Set()]);
+              update_sudoku(coords, val, sudoku);
+            } else if (column_potential_difference.size == 1) {
+              change = true
+              const val = column_potential_difference.values().next().value
+              sudoku.set(coords, [val, new Set()])
+              update_sudoku(coords, val, sudoku)
+            } else if (square_potential_difference.size == 1) {
+              change = true
+              const val = square_potential_difference.values().next().value
+              sudoku.set(coords, [val, new Set()])
+              update_sudoku(coords, val, sudoku)
+            }
           }
         }
       }
@@ -262,7 +306,7 @@ function no_zeros(sudoku){
       let coords = ""+i+","+j;
 
       if (sudoku.get(coords)[0] == 0){
-        let no_zeros_bool = false;
+        no_zeros_bool = false;
       }
     
     }
@@ -270,31 +314,74 @@ function no_zeros(sudoku){
   return(no_zeros_bool)
 }
 
-function solve(map_sudoku_test){
+function update_value(sudoku, coords, guess){
+
+  sudoku.set(coords, [guess, new Set()])
+
+}
+
+function solve(sudoku){
 
   let guess_stack = [];
-  guess_stack.push(map_sudoku_test);
+  guess_stack.push(sudoku);
 
   let solved = false;
   while (solved == false){
-    var current_guess = guess_stack.pop();
-    simplify(current_guess)
-    solved = no_zeros(current_guess)
+    var sudoku = guess_stack.pop();
+    const sudoku_old = structuredClone(sudoku)
+
+    // if (sudoku_old = sudoku){
+    //   console.log("no change")
+    // }
+    simplify(sudoku)
+
+
+    solved = no_zeros(sudoku)
 
     if (solved == false){
 
-      console.log("hello, false it is :)")
+      // kill a branch if we end up with an impossible scenario
+      var alive_branch = true
+      for (let [k,v] of sudoku){
+        if (v[0] == 0 && v[1].size == 0){
+          //coods = k
+          alive_branch = false
+        }
+      }
+      if (alive_branch == true){
+        
+        // get a "list" of all unsovled cells
+        let best = 10
+        for (let [k,v] of sudoku){
+          if (v[0] == 0 && v[1].size < best){
+            // get a cell that has the least possible options for our guess and check
+            best = v[1].size
+            var best_coords = k
+
+            
+          }
+
+        }
+
+        for (let guess of sudoku.get(best_coords)[1]){
+          // for each potential value in our cell, add a guess to the stack
+          const sudoku_new = structuredClone(sudoku)
+          update_value(sudoku_new, best_coords, guess)
+          update_sudoku(best_coords, guess, sudoku_new)
+          // sudoku = update_sudoku(best_coords, guess, sudoku)
+          guess_stack.push(sudoku_new)
+        }
+      }
 
     }
+
   }
 
-  return(current_guess)
+  return(sudoku)
 
 }
 
 map_sudoku_test = solve(map_sudoku_test);
-
-
 
 let str1 = ""
 for ( let i = 0; i<9; i++){
