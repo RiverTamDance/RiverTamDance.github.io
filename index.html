@@ -113,6 +113,8 @@ input::-webkit-inner-spin-button {
                     coords = "" + i + "," + j;
                     let sudoku_input = []
                     sudoku_input.push(getElementById(coords).value);
+                    document.getElementById("demo").innerHTML = sudoku_input;
+                    console.log(sudoku_input)
                 }
             }
             
