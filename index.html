@@ -106,13 +106,16 @@ input::-webkit-inner-spin-button {
         
     <p id="output"></p>
 
-    <script>
+    <script src="js/sudoku_solver.js">
         function getInputValue() {
-            let sudoku_input = document.getElementById("1,1").value;
-            sudoku_input = sudoku_input + 1;
-            document.getElementById("1,1").value = sudoku_input;
-            document.getElementById("output").innerHTML = sudoku_input;
-            // document.getElementById("1,1").innerHTML = sudoku_input[1].value
+            for (i=0; i<9; i++){
+                for (j=0; j<9; j++){
+                    coords = "" + i + "," + j;
+                    let sudoku_input = []
+                    sudoku_input.push(getElementById(coords).value);
+                }
+            }
+            
         }
     </script>
 
