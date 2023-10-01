@@ -110,13 +110,13 @@ input::-webkit-inner-spin-button {
     
     <script>
         function getInputValue() {
+            let sudoku_input = []
             for (i=0; i<9; i++){
                 for (j=0; j<9; j++){
                     coords = "" + i + "," + j;
-                    let sudoku_input = []
+                    console.log(sudoku_input)
                     sudoku_input.push(getElementById(coords).value);
                     document.getElementById("demo").innerHTML = sudoku_input;
-                    console.log(sudoku_input)
                 }
             }
         }
