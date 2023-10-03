@@ -84,8 +84,8 @@ input::-webkit-inner-spin-button {
 
     <script>
         let SudokuBoard = document.querySelector('#sudoku_board') ;
-        for (let i =1; i<=9; i++) {
-            for (let j=1; j<=9; j++){
+        for (let i =0; i<9; i++) {
+            for (let j=0; j<9; j++){
                 let SmallSquare = document.createElement('div');
                 let InputNum = document.createElement('input');
                 InputNum.id = ""+i+","+j;
@@ -101,7 +101,7 @@ input::-webkit-inner-spin-button {
     </script>
 
     <button type="button" onclick = "getInputValue()">
-        +1 the value from cell 1,1
+        Solve it!
     </button>
         
     <p id="output"></p>
@@ -112,11 +112,26 @@ input::-webkit-inner-spin-button {
         function getInputValue() {
             let sudoku_input = []
             for (i=0; i<9; i++){
+                var row_input = []
                 for (j=0; j<9; j++){
-                    coords = "" + i + "," + j;
-                    console.log(sudoku_input)
-                    sudoku_input.push(getElementById(coords).value);
-                    document.getElementById("demo").innerHTML = sudoku_input;
+                    var coords = "" + i + "," + j;
+                    if (document.getElementById(coords).value == ''){
+                        row_input.push(0);
+                    } else {
+                        row_input.push(Number(document.getElementById(coords).value))
+                    }
+                    //document.getElementById("output").innerHTML = sudoku_input;
+                }
+                sudoku_input.push(row_input)
+            }
+
+            solved_sudoku = solve(sudoku_input)
+            console.log(solved_sudoku)
+
+            for (i=0; i<9; i++){
+                for (j=0; j<9; j++){
+                    var coords = "" + i + "," + j;
+                    document.getElementById(coords).value = solved_sudoku.get(coords)[0];
                 }
             }
         }

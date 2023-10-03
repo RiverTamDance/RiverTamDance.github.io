@@ -1,30 +1,4 @@
 
-// Below are the constants that the rest of the program uses
-
-const one_to_nine = new Set([1,2,3,4,5,6,7,8,9])
-
-let map_squares = new Map()
-for (let i = 0; i < 9; i++){
-  for (let j = 0; j<9; j++){
-    
-    let coords = "" + i + "," + j
-    i_adjusted = Math.floor(i/3)
-    j_adjusted = Math.floor(j/3)
-    // I haven't really thought about local vs global naming and this may ruin things
-    // somehting to look out for here.
-    let coords_adjusted = "" + i_adjusted + "," + j_adjusted;
-    
-    // looks like: "1,1" gets ["3,3" "3,4", "3,5",...,"5,5"] 
-    let square_entry = map_squares.get(coords_adjusted);
-      if (square_entry == undefined) {
-        // console.log(k)
-        // console.log(undefined)
-        map_squares.set(coords_adjusted, [coords])
-      } else {
-        square_entry.push(coords);
-      }
-  }
-}
 
 //-------------------------------------------------------------------------------
 
@@ -299,6 +273,33 @@ function update_value(sudoku, coords, guess){
 
   sudoku.set(coords, [guess, new Set()])
 
+}
+
+// Below are the constants that the rest of the program uses
+
+const one_to_nine = new Set([1,2,3,4,5,6,7,8,9])
+
+const map_squares = new Map()
+for (let i = 0; i < 9; i++){
+  for (let j = 0; j<9; j++){
+    
+    let coords = "" + i + "," + j
+    i_adjusted = Math.floor(i/3)
+    j_adjusted = Math.floor(j/3)
+    // I haven't really thought about local vs global naming and this may ruin things
+    // somehting to look out for here.
+    let coords_adjusted = "" + i_adjusted + "," + j_adjusted;
+    
+    // looks like: "1,1" gets ["3,3" "3,4", "3,5",...,"5,5"] 
+    let square_entry = map_squares.get(coords_adjusted);
+      if (square_entry == undefined) {
+        // console.log(k)
+        // console.log(undefined)
+        map_squares.set(coords_adjusted, [coords])
+      } else {
+        square_entry.push(coords);
+      }
+  }
 }
 
 function solve(sudoku){
