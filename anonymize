@@ -1,0 +1,175 @@
+"""
+Address Detection and Anonymization using Presidio
+This script shows how to detect and anonymize addresses in text.
+"""
+
+from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
+from presidio_anonymizer import AnonymizerEngine
+from presidio_anonymizer.entities import OperatorConfig
+
+
+def create_address_analyzer():
+    """
+    Create an analyzer with enhanced address detection.
+    """
+    analyzer = AnalyzerEngine()
+    
+    # Enhanced street address pattern
+    street_patterns = [
+        # Standard US address format
+        Pattern(
+            name="us_street_address",
+            regex=r'\d+\s+(?:[A-Za-z]+\s+)*(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Circle|Cir|Way|Place|Pl|Parkway|Pkwy|Highway|Hwy)\.?(?:\s+(?:North|South|East|West|N|S|E|W)\.?)?',
+            score=0.6
+        ),
+        # PO Box pattern
+        Pattern(
+            name="po_box",
+            regex=r'P\.?\s*O\.?\s*Box\s+\d+',
+            score=0.7
+        ),
+        # Suite/Apt pattern
+        Pattern(
+            name="suite_apt",
+            regex=r'(?:Suite|Ste|Apt|Apartment|Unit|#)\s*\.?\s*\d+[A-Za-z]?',
+            score=0.5
+        )
+    ]
+    
+    # ZIP code pattern
+    zip_pattern = Pattern(
+        name="us_zip",
+        regex=r'\b\d{5}(?:-\d{4})?\b',
+        score=0.6
+    )
+    
+    # State abbreviation pattern (within address context)
+    state_pattern = Pattern(
+        name="us_state",
+        regex=r'\b(?:AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\b',
+        score=0.3
+    )
+    
+    # Create custom recognizers
+    address_recognizer = PatternRecognizer(
+        supported_entity="STREET_ADDRESS",
+        patterns=street_patterns,
+        context=["address", "street", "located", "residence", "office", "building"]
+    )
+    
+    zip_recognizer = PatternRecognizer(
+        supported_entity="ZIP_CODE",
+        patterns=[zip_pattern],
+        context=["zip", "postal", "code"]
+    )
+    
+    # Add recognizers
+    analyzer.registry.add_recognizer(address_recognizer)
+    analyzer.registry.add_recognizer(zip_recognizer)
+    
+    return analyzer
+
+
+def detect_and_anonymize(text, anonymization_type="replace"):
+    """
+    Detect and anonymize addresses in text.
+    
+    Args:
+        text: Input text
+        anonymization_type: "replace", "mask", "redact", or "hash"
+    """
+    # Create analyzer and anonymizer
+    analyzer = create_address_analyzer()
+    anonymizer = AnonymizerEngine()
+    
+    # Analyze text
+    results = analyzer.analyze(
+        text=text,
+        language="en",
+        entities=["STREET_ADDRESS", "ZIP_CODE", "LOCATION"]
+    )
+    
+    # Configure anonymization operators
+    if anonymization_type == "replace":
+        operators = {
+            "STREET_ADDRESS": OperatorConfig("replace", {"new_value": "<ADDRESS>"}),
+            "ZIP_CODE": OperatorConfig("replace", {"new_value": "<ZIP>"}),
+            "LOCATION": OperatorConfig("replace", {"new_value": "<CITY>"})
+        }
+    elif anonymization_type == "mask":
+        operators = {
+            "STREET_ADDRESS": OperatorConfig("mask", {"masking_char": "*", "chars_to_mask": 100, "from_end": False}),
+            "ZIP_CODE": OperatorConfig("mask", {"masking_char": "*", "chars_to_mask": 100, "from_end": False}),
+            "LOCATION": OperatorConfig("mask", {"masking_char": "*", "chars_to_mask": 100, "from_end": False})
+        }
+    elif anonymization_type == "redact":
+        operators = {
+            "STREET_ADDRESS": OperatorConfig("redact"),
+            "ZIP_CODE": OperatorConfig("redact"),
+            "LOCATION": OperatorConfig("redact")
+        }
+    else:  # hash
+        operators = {
+            "STREET_ADDRESS": OperatorConfig("hash"),
+            "ZIP_CODE": OperatorConfig("hash"),
+            "LOCATION": OperatorConfig("hash")
+        }
+    
+    # Anonymize
+    anonymized_result = anonymizer.anonymize(
+        text=text,
+        analyzer_results=results,
+        operators=operators
+    )
+    
+    return results, anonymized_result
+
+
+def main():
+    # Sample texts
+    texts = [
+        "John Doe lives at 123 Main Street, Springfield, IL 62701.",
+        
+        "Ship to: Jane Smith, 456 Oak Avenue, Apt 3B, Los Angeles, CA 90001",
+        
+        "Company headquarters: Tech Corp, 789 Innovation Drive, Suite 500, Seattle, WA 98101. "
+        "Billing address: P.O. Box 1234, Seattle, WA 98102",
+        
+        "Emergency contact: 321 Elm Road, Austin, TX 78701 or 555 Pine Street, Austin, TX 78702"
+    ]
+    
+    print("=" * 80)
+    print("ADDRESS DETECTION AND ANONYMIZATION DEMO")
+    print("=" * 80)
+    
+    for i, text in enumerate(texts, 1):
+        print(f"\n{'=' * 80}")
+        print(f"Example {i}")
+        print('=' * 80)
+        print(f"\nOriginal:\n{text}")
+        
+        # Show different anonymization methods
+        for method in ["replace", "mask", "redact"]:
+            results, anonymized = detect_and_anonymize(text, method)
+            
+            print(f"\n--- Anonymization method: {method.upper()} ---")
+            print(f"Anonymized text:\n{anonymized.text}")
+            
+            if results:
+                print(f"\nDetected entities ({len(results)}):")
+                for result in results:
+                    original_text = text[result.start:result.end]
+                    print(f"  - {result.entity_type}: '{original_text}' (score: {result.score:.2f})")
+
+
+if __name__ == "__main__":
+    try:
+        import presidio_analyzer
+        import presidio_anonymizer
+        print("Starting address detection demo...\n")
+        main()
+    except ImportError as e:
+        print(f"Error: {e}")
+        print("\nPlease install required packages:")
+        print("pip install presidio-analyzer presidio-anonymizer spacy --break-system-packages")
+        print("python -m spacy download en_core_web_lg")
